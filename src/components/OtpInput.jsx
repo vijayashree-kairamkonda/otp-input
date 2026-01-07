@@ -17,6 +17,10 @@ export const OtpInput = ({ size = 6, onSubmit }) => {
     return new Array(size).fill("");
   });
 
+  // No-op change handler to keep inputs controlled and avoid React's
+  // read-only warning when using the `value` prop.
+  const handleChange = () => {};
+
   // Focus helpers
   // Moves focus to the immediate next input if it exists.
   const focusNext = (currentInput) => {
@@ -129,7 +133,7 @@ export const OtpInput = ({ size = 6, onSubmit }) => {
 
   return (
     <div className="container">
-      <h2>Enter OTP</h2>
+      <h1>Enter OTP</h1>
       <div className="otp-inputs-container">
         {inputValues.map((value, index) => {
           return (
@@ -138,6 +142,7 @@ export const OtpInput = ({ size = 6, onSubmit }) => {
               value={value}
               key={index.toString()}
               onKeyUp={handleKeyUp}
+              onChange={handleChange}
               maxLength={1}
             />
           );
