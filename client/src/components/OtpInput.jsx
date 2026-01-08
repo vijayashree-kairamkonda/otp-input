@@ -16,6 +16,7 @@ export const OtpInput = ({ size = 6, onSubmit }) => {
   const [inputValues, setInputValues] = useState(() => {
     return new Array(size).fill("");
   });
+  const [isVerifying, setIsVerifying] = useState(false);
 
   // No-op change handler to keep inputs controlled and avoid React's
   // read-only warning when using the `value` prop.
@@ -131,9 +132,26 @@ export const OtpInput = ({ size = 6, onSubmit }) => {
     });
   }, [inputValues]);
 
+  const isComplete = inputValues.every((v) => v.length === 1);
+
+  const handleVerify = async () => {
+    if (!isComplete || isVerifying) return;
+    setIsVerifying(true);
+    try {
+      const otp = inputValues.join("");
+      if (onSubmit) {
+        await Promise.resolve(onSubmit(otp));
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
   return (
-    <div className="container">
-      <h1>Enter OTP</h1>
+    <div className="otp-container">
+      <h4>Enter OTP</h4>
       <div className="otp-inputs-container">
         {inputValues.map((value, index) => {
           return (
@@ -148,6 +166,17 @@ export const OtpInput = ({ size = 6, onSubmit }) => {
           );
         })}
       </div>
+      <button
+        type="button"
+        className={`btn primary ${isVerifying ? "loading" : ""}`}
+        disabled={!isComplete || isVerifying}
+        onClick={handleVerify}
+      >
+        {isVerifying && <span className="spinner" aria-hidden="true" />}
+        <span className="btn-label">
+          {isVerifying ? "Verifying…" : "Verify OTP"}
+        </span>
+      </button>
     </div>
   );
 };
