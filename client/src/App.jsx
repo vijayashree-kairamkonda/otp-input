@@ -1,23 +1,33 @@
 import { useState } from "react";
 import "./App.css";
 import { OtpInput } from "./components/OtpInput";
+import { sendOtp, verifyOtp } from "./services/api";
 
 function App() {
   const [email, setEmail] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [emailStatus, setEmailStatus] = useState(null); // { type, message }
+  const [otpStatus, setOtpStatus] = useState(null); // { type, message }
 
   const handleSendOtp = async () => {
     if (!email || isSending) return;
     setIsSending(true);
+    setEmailStatus(null);
     try {
-      // Replace with real API call to send OTP
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await sendOtp(email);
       setOtpSent(true);
+      setEmailStatus({ type: "success", message: "OTP sent successfully." });
+    } catch (err) {
+      setEmailStatus({
+        type: "error",
+        message: err?.message || "Failed to send OTP.",
+      });
     } finally {
       setIsSending(false);
     }
   };
+
   return (
     <div className="app-container">
       <div className="card">
@@ -39,7 +49,10 @@ function App() {
               aria-label="Email address"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailStatus(null);
+              }}
             />
             <button
               type="button"
@@ -53,12 +66,35 @@ function App() {
               </span>
             </button>
           </div>
+          {emailStatus && (
+            <div className={`form-message ${emailStatus.type}`}>
+              {emailStatus.message}
+            </div>
+          )}
         </form>
-        {otpSent && (
-          <div className="otp-section">
-            <OtpInput />
-          </div>
-        )}
+        {/* {otpSent && ( */}
+        <div className="otp-section">
+          <OtpInput
+            status={otpStatus}
+            onSubmit={async (otp) => {
+              setOtpStatus(null);
+              try {
+                await verifyOtp(email, otp);
+                setOtpStatus({
+                  type: "success",
+                  message: "Email verification successful.",
+                });
+              } catch (err) {
+                setOtpStatus({
+                  type: "error",
+                  message: err?.message || "Failed to verify OTP.",
+                });
+                throw err;
+              }
+            }}
+          />
+        </div>
+        {/* )} */}
       </div>
     </div>
   );

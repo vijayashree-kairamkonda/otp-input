@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 
 // OtpInput renders a row of single-character inputs and manages
 // cursor-aware insertion, shifting, and focus movement for typical OTP typing.
-export const OtpInput = ({ size = 6, onSubmit }) => {
+export const OtpInput = ({ size = 4, onSubmit, status }) => {
   // Stores the current digit for each input as strings (either "" or a single character).
   const [inputValues, setInputValues] = useState(() => {
     return new Array(size).fill("");
@@ -166,6 +166,9 @@ export const OtpInput = ({ size = 6, onSubmit }) => {
           );
         })}
       </div>
+      {status && (
+        <div className={`form-message ${status.type}`}>{status.message}</div>
+      )}
       <button
         type="button"
         className={`btn primary ${isVerifying ? "loading" : ""}`}

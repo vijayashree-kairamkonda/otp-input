@@ -163,6 +163,44 @@ body {
   margin-top: 20px;
 }
 
+/* Inline form messages placed near inputs */
+.form-message {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+}
+.form-message.success {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+.form-message.error {
+  background: #fef2f2;
+  color: #7f1d1d;
+  border-color: #fecaca;
+}
+
+/* Alert messages */
+.alert {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  border: 1px solid var(--border);
+}
+.alert-success {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+.alert-error {
+  background: #fef2f2;
+  color: #7f1d1d;
+  border-color: #fecaca;
+}
+
 /* OTP component styles */
 .otp-container {
   display: flex;
