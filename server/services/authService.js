@@ -1,6 +1,7 @@
 import { User } from "../models/User.js";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import { generateToken } from "./jwtService.js";
 
 dotenv.config();
 
@@ -35,7 +36,8 @@ export const sendOTP = async (email, res) => {
         .status(400)
         .json({ message: "OTP already sent to your email address" });
     }
-    const otp = parseInt(Math.random() * 10000);
+    // Generate a 4-digit, zero-padded OTP as a string to avoid type issues
+    const otp = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
     const otpExpiry = currentTimeStamp + 1800;
     await sendOtpEmail(email, otp);
     if (user) {
@@ -57,5 +59,33 @@ export const sendOTP = async (email, res) => {
   } catch (err) {
     console.log("An error occurred while sending an OTP", err.message);
     res.status(500).json({ message: "An internal error occurred" });
+  }
+};
+
+export const verifyOTP = async (email, otp) => {
+  try {
+    const user = await User.findOne({ email });
+    console.log(user);
+    if (!user) return { statusCode: 404, message: "User not found" };
+    if (!user.otp)
+      return {
+        statusCode: 404,
+        message: "OTP not found, please send another OTP",
+      };
+    const currentTimeStamp = Math.floor(new Date().getTime() / 1000);
+    if (user.otpExpiry < currentTimeStamp) {
+      return { statusCode: 410, message: "OTP expired" };
+    }
+    const providedOtp = String(otp).trim();
+    if (String(user.otp) !== providedOtp)
+      return { statusCode: 400, message: "Invalid OTP" };
+    await User.updateOne(
+      { _id: user._id },
+      { $unset: { otp: "", otpExpiry: "" } }
+    );
+    const token = generateToken({ id: user._id });
+    return { statusCode: 200, message: "Email verification successful", token };
+  } catch (err) {
+    return { statusCode: 500, message: err.message };
   }
 };

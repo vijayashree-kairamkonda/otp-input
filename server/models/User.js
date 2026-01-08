@@ -14,11 +14,6 @@ const userSchema = new Schema({
       message: "Invalid email address",
     },
   },
-  role: {
-    type: String,
-    enum: ["ADMIN", "USER"],
-    default: "USER",
-  },
   otp: Number,
   otpExpiry: Number,
   createdAt: Number,
