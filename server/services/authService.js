@@ -7,22 +7,34 @@ dotenv.config();
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  secure: false,
+  port: 587,
+  secure: false, // STARTTLS
   auth: {
-    user: process.env.EMAIL,
-    // Prefer an app password when using Gmail
-    pass: process.env.PASS,
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false, // required on Render
   },
 });
 
-const sendOtpEmail = (email, otp) => {
-  return transporter.sendMail({
-    from: process.env.EMAIL,
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("❌ Email transporter error:", error);
+  } else {
+    console.log("✅ Email transporter is ready");
+  }
+});
+
+const sendOtpEmail = async (email, otp) => {
+  return await transporter.sendMail({
+    from: `"OTP Auth" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Verify your email",
     html: `
-    <p>Below is the OTP for email verification</p>
-    <p>${otp}</p>
+      <p>Below is the OTP for email verification</p>
+      <h2>${otp}</h2>
+      <p>This OTP is valid for 30 minutes</p>
     `,
   });
 };
@@ -39,7 +51,10 @@ export const sendOTP = async (email, res) => {
     // Generate a 4-digit, zero-padded OTP as a string to avoid type issues
     const otp = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
     const otpExpiry = currentTimeStamp + 1800;
+    console.log("Sending OTP to:", email);
     await sendOtpEmail(email, otp);
+    console.log("OTP email sent");
+
     if (user) {
       console.log("otp sent for existing user");
       user.otp = otp;
