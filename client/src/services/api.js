@@ -16,7 +16,7 @@ async function parseJsonSafe(res) {
   }
 }
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL.replace(/\/$/, "");
 
 export async function sendOtp(email) {
   const res = await fetch(`${API_BASE}/auth/otp/send`, {
