@@ -12,12 +12,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "cors": "^2.8.5",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.2",
-    "nodemailer": "^7.0.12"
+    "nodemailer": "^7.0.12",
+    "otp-input-monorepo": "file:.."
   },
   "devDependencies": {
     "nodemon": "^3.1.11"

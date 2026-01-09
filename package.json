@@ -1,0 +1,13 @@
+{
+  "name": "otp-input-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "dev": "concurrently \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "start": "concurrently \"npm --prefix server run start\" \"npm --prefix client run preview\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
