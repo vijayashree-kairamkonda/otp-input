@@ -16,8 +16,10 @@ async function parseJsonSafe(res) {
   }
 }
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 export async function sendOtp(email) {
-  const res = await fetch("/auth/otp/send", {
+  const res = await fetch(`${API_BASE}/auth/otp/send`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -29,7 +31,7 @@ export async function sendOtp(email) {
 }
 
 export async function verifyOtp(email, otp) {
-  const res = await fetch("/auth/otp/verify", {
+  const res = await fetch(`${API_BASE}/auth/otp/verify`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
