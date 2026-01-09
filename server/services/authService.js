@@ -7,7 +7,7 @@ dotenv.config();
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  secure: true,
+  secure: false,
   auth: {
     user: process.env.EMAIL,
     // Prefer an app password when using Gmail
