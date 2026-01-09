@@ -51,9 +51,9 @@ export const sendOTP = async (email, res) => {
     // Generate a 4-digit, zero-padded OTP as a string to avoid type issues
     const otp = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
     const otpExpiry = currentTimeStamp + 1800;
-    console.log("Sending OTP to:", email);
-    await sendOtpEmail(email, otp);
-    console.log("OTP email sent");
+    // console.log("Sending OTP to:", email);
+    // await sendOtpEmail(email, otp);
+    // console.log("OTP email sent");
 
     if (user) {
       console.log("otp sent for existing user");
