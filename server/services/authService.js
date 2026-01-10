@@ -1,38 +1,19 @@
 import { User } from "../models/User.js";
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { generateToken } from "./jwtService.js";
+import { Resend } from "resend";
 
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // STARTTLS
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false, // required on Render
-  },
-});
-
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("❌ Email transporter error:", error);
-  } else {
-    console.log("✅ Email transporter is ready");
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendOtpEmail = async (email, otp) => {
-  return await transporter.sendMail({
-    from: `"OTP Auth" <${process.env.EMAIL_USER}>`,
+  await resend.emails.send({
+    from: "OTP Auth <onboarding@resend.dev>",
     to: email,
     subject: "Verify your email",
     html: `
-      <p>Below is the OTP for email verification</p>
+      <p>Your OTP for email verification:</p>
       <h2>${otp}</h2>
       <p>This OTP is valid for 30 minutes</p>
     `,
