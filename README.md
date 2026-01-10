@@ -2,8 +2,6 @@
 
 A full‑stack **OTP-based email verification system** built as a **monorepo**, with a React (Vite) frontend and a Node.js (Express) backend.
 
-Live URL : https://verifyemailviaotp.netlify.app/
-
 The project demonstrates:
 
 * OTP generation & email delivery
@@ -40,7 +38,7 @@ otp-input-monorepo/
 * Node.js
 * Express
 * MongoDB (Mongoose)
-* Nodemailer (Email OTP)
+* Resend (Email OTP via HTTP API)
 * JSON Web Token (JWT)
 * CORS
 
@@ -79,8 +77,9 @@ npm run install:all
 ```env
 PORT=5000
 MONGO_URL=your_mongodb_connection_string
-EMAIL_USER=your_email
-EMAIL_PASS=your_email_password
+PORT=5000
+MONGO_URL=your_mongodb_connection_string
+RESEND_API_KEY=your_resend_api_key
 JWT_SECRET=your_secret_key
 CLIENT_URL=http://localhost:5173
 ```
@@ -115,7 +114,17 @@ npm run dev
 
 ---
 
-## 🌍 Production Deployment
+## 📧 Email & OTP Delivery (Production)
+
+This project uses **Resend** for sending OTP emails in production.
+
+> Nodemailer with Gmail SMTP was removed due to performance and reliability issues in cloud environments (timeouts, throttling, blocked SMTP connections).
+
+### Why Resend?
+
+* No SMTP (HTTP-based, very fast)
+* Reliable on Render
+* Sub-second email delivery
 
 ### Backend (Render)
 
@@ -137,8 +146,9 @@ npm run dev
 ```env
 PORT=10000
 MONGO_URL=...
-EMAIL_USER=...
-EMAIL_PASS=...
+PORT=10000
+MONGO_URL=...
+RESEND_API_KEY=...
 JWT_SECRET=...
 CLIENT_URL=https://verifyemailviaotp.netlify.app
 ```
@@ -166,6 +176,15 @@ Deployment handled via `netlify.toml` at repo root.
 ```env
 VITE_API_URL=https://otp-input-1.onrender.com
 ```
+
+---
+
+## 📌 Notes
+
+* `node_modules` and `.git` should not be committed in real projects
+* This repo is structured for learning & demonstration
+* Suitable for portfolio / interview discussion
+
 ---
 
 ## 👩‍💻 Author
